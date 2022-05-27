@@ -12,4 +12,8 @@ router.get('/user/:uid', placesControllers.getPlaceByUserId)
 
 router.post('/', placesControllers.addNewPlace)
 
+router.patch('/:id', placesControllers.updatePlace)
+
+router.delete('/:id', placesControllers.deletePlace)
+
 module.exports = router;
