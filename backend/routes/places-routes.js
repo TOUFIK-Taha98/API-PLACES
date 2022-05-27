@@ -18,7 +18,10 @@ router.post('/', [
     ], 
     placesControllers.addNewPlace)
 
-router.patch('/:id', placesControllers.updatePlace)
+router.patch('/:id', [
+    check('title').not().isEmpty(),
+    check('description').isLength({min:5}),
+    ], placesControllers.updatePlace)
 
 router.delete('/:id', placesControllers.deletePlace)
 
