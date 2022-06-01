@@ -17,4 +17,3 @@ const placeSchema = new Schema({
 module.exports = mongoose.model('Place', placeSchema);
 
 
-// Adding the Relation between Places & Users
