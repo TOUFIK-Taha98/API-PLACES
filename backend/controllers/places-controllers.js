@@ -5,6 +5,8 @@ const { validationResult } = require('express-validator')
 const HttpError = require('../models/http-error');
 const getCoordsForAdress = require('../util/location')
 
+const Place = require('../models/place');
+
 let DUMMY_PLACES = [
     {
         id: 'p1', 
@@ -60,15 +62,24 @@ const addNewPlace = async (req, res, next) => {
         return next(error);
     }
 
-    const createdPlace = {
-        id: uuid(),
+    const createdPlace = new Place({
         title,
         description,
-        location: coordinates,
         address,
+        location: coordinates,
+        image: 'https://azurplus.fr/wp-content/uploads/Quest-ce-quune-URL-Uniform-Resource-Locator.png',
         creator
+    })
+    try {
+        await createdPlace.save();
+    } catch (err) {
+        const error = new HttpError(
+            'Creating place failed, please try again',
+            500
+        );
+        return next(error)
     }
-    DUMMY_PLACES.push(createdPlace);
+
     res.status(201).json(createdPlace)
 }
 

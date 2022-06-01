@@ -28,7 +28,7 @@ app.use((error, req, res, next) => {
 })
 
 mongoose
-    .connect('mongodb+srv://taha:taha123@cluster0.osxrutg.mongodb.net/place?retryWrites=true&w=majority')
+    .connect('mongodb+srv://taha:taha123@cluster0.osxrutg.mongodb.net/places?retryWrites=true&w=majority')
     .then(() => {
         app.listen(5000, ()=> console.log('Connected to mongoose and listenning on 5000'))
     })
