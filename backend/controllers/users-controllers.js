@@ -127,7 +127,8 @@ const login = async (req, res, next) => {
         )
         return next(error);
     }
-
+    // Generating Tokens (JWT) on the Backend
+    
     res.json({message : "Logged in!"})
 }
 exports.getUsers = getUsers;
