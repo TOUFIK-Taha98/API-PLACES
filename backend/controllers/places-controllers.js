@@ -7,6 +7,11 @@ const Place = require('../models/place');
 const User = require ('../models/user');
 const mongoose = require('mongoose');
 
+const getAllplaces = async (req, res, next) =>{
+    const places = await Place.find();
+    res.json({places : places.map(p => p.toObject({getters: true}))})
+}
+
 const getPlaceById = async (req, res, next) => {
     const placeId = req.params.id;
     console.log(placeId)
@@ -83,12 +88,12 @@ const addNewPlace = async (req, res, next) => {
         address,
         location: coordinates,
         image: 'https://azurplus.fr/wp-content/uploads/Quest-ce-quune-URL-Uniform-Resource-Locator.png',
-        creator
+        creator: req.userData.userId
     })
 
     let user;
     try {
-        user = await User.findById(creator);
+        user = await User.findById(req.userData.userId);
     } catch (err) {
         const error = new HttpError(
             'Creating place failed, please try again',
@@ -148,7 +153,14 @@ const updatePlace= async (req, res, next) => {
         )
         return next(error);
     }
-    
+    //Manage if the user who want to edit is the user that created the place
+    if(place.creator.toString() !== req.userData.userId){
+        const error = new HttpError(
+            'You are not allowed to edit this place',
+            401
+        )
+        return next(error);
+    }
     place.title = title;
     place.description = description;
 
@@ -185,6 +197,14 @@ const deletePlace = async (req, res, next) => {
         );
         return next(error);
     }
+    //Manage if the user who want to edit is the user that created the place
+    if(place.creator.id !== req.userData.userId){
+        const error = new HttpError(
+            'You are not allowed to delete this place',
+            401
+        )
+        return next(error);
+    }
     try{
         const sess = await mongoose.startSession();
         sess.startTransaction();
@@ -206,3 +226,4 @@ exports.getPlacesByUserId = getPlacesByUserId;
 exports.addNewPlace = addNewPlace;
 exports.updatePlace = updatePlace;
 exports.deletePlace = deletePlace;
+exports.getAllplaces = getAllplaces;
