@@ -7,6 +7,11 @@ const Place = require('../models/place');
 const User = require ('../models/user');
 const mongoose = require('mongoose');
 
+const getAllplaces = async (req, res, next) =>{
+    const places = await Place.find();
+    res.json({places : places.map(p => p.toObject({getters: true}))})
+}
+
 const getPlaceById = async (req, res, next) => {
     const placeId = req.params.id;
     console.log(placeId)
@@ -83,12 +88,12 @@ const addNewPlace = async (req, res, next) => {
         address,
         location: coordinates,
         image: 'https://azurplus.fr/wp-content/uploads/Quest-ce-quune-URL-Uniform-Resource-Locator.png',
-        creator
+        creator: req.userData.userId
     })
 
     let user;
     try {
-        user = await User.findById(creator);
+        user = await User.findById(req.userData.userId);
     } catch (err) {
         const error = new HttpError(
             'Creating place failed, please try again',
@@ -221,3 +226,4 @@ exports.getPlacesByUserId = getPlacesByUserId;
 exports.addNewPlace = addNewPlace;
 exports.updatePlace = updatePlace;
 exports.deletePlace = deletePlace;
+exports.getAllplaces = getAllplaces;

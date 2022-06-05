@@ -8,6 +8,7 @@ const placesControllers = require('../controllers/places-controllers')
 
 const checkAuth = require('../middleware/check-auth');
 
+router.get('/', placesControllers.getAllplaces)
 router.get('/:id', placesControllers.getPlaceById)
 
 router.get('/user/:uid', placesControllers.getPlacesByUserId)
